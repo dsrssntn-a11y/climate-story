@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Page background -->
+    <radialGradient id="bgGlow" cx="35%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Globe sphere gradient -->
+    <radialGradient id="globeSphere" cx="42%" cy="38%" r="58%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0.9"/>
+    </radialGradient>
+    <!-- Globe glow -->
+    <radialGradient id="globeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="#64748b" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#64748b" stop-opacity="0.18"/>
+    </radialGradient>
+    <!-- Coral reef glow -->
+    <radialGradient id="coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Amazon glow -->
+    <radialGradient id="amazonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#52B788" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#52B788" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Arctic glow -->
+    <radialGradient id="arcticGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#48CAE4" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#48CAE4" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="globeClip">
+      <circle cx="820" cy="315" r="258"/>
+    </clipPath>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#020617"/>
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
+
+  <!-- Globe outer glow ring -->
+  <circle cx="820" cy="315" r="276" fill="url(#globeGlow)"/>
+
+  <!-- Globe sphere -->
+  <circle cx="820" cy="315" r="258" fill="url(#globeSphere)"/>
+
+  <!-- Globe border glow -->
+  <circle cx="820" cy="315" r="258" fill="none" stroke="#475569" stroke-width="1" opacity="0.5"/>
+  <circle cx="820" cy="315" r="260" fill="none" stroke="#64748b" stroke-width="0.5" opacity="0.25"/>
+
+  <!-- Graticule lines (clipped to globe) -->
+  <g clip-path="url(#globeClip)" opacity="0.07" stroke="#94a3b8" stroke-width="0.6" fill="none">
+    <!-- Latitude lines -->
+    <ellipse cx="820" cy="315" rx="258" ry="50"/>
+    <ellipse cx="820" cy="315" rx="258" ry="120"/>
+    <ellipse cx="820" cy="315" rx="258" ry="190"/>
+    <ellipse cx="820" cy="315" rx="228" ry="50" transform="rotate(-30 820 315)"/>
+    <!-- Longitude lines -->
+    <ellipse cx="820" cy="315" rx="50" ry="258"/>
+    <ellipse cx="820" cy="315" rx="120" ry="258"/>
+    <ellipse cx="820" cy="315" rx="190" ry="258"/>
+  </g>
+
+  <!-- Land masses (simplified continents, clipped) -->
+  <g clip-path="url(#globeClip)" fill="#334155" opacity="0.55">
+    <!-- Europe / Africa -->
+    <path d="M790,170 L840,165 L870,180 L880,230 L870,290 L860,360 L840,420 L810,450 L790,430 L780,380 L770,310 L775,250 L780,200 Z"/>
+    <!-- Asia (partial) -->
+    <path d="M870,175 L940,168 L990,185 L1010,220 L990,270 L960,290 L920,280 L890,260 L875,220 Z"/>
+    <!-- South America edge -->
+    <path d="M740,280 L760,265 L775,295 L770,360 L755,400 L738,385 L730,340 L732,300 Z"/>
+    <!-- India -->
+    <path d="M900,285 L925,278 L935,310 L920,345 L900,340 L888,315 Z"/>
+    <!-- Madagascar -->
+    <path d="M870,370 L882,360 L890,385 L880,410 L868,405 L862,385 Z"/>
+  </g>
+
+  <!-- Ecosystem glow spots -->
+  <!-- Coral Reefs (Indo-Pacific) -->
+  <circle cx="970" cy="350" r="45" fill="url(#coralGlow)"/>
+  <!-- Amazon -->
+  <circle cx="720" cy="330" r="40" fill="url(#amazonGlow)"/>
+  <!-- Arctic -->
+  <circle cx="820" cy="130" r="55" fill="url(#arcticGlow)"/>
+
+  <!-- Ecosystem dots — Coral Reefs orange -->
+  <g filter="url(#softGlow)">
+    <circle cx="972" cy="340" r="3.5" fill="#FF6B35" opacity="0.9"/>
+    <circle cx="985" cy="355" r="2.5" fill="#FF6B35" opacity="0.8"/>
+    <circle cx="960" cy="362" r="3" fill="#FF6B35" opacity="0.85"/>
+    <circle cx="978" cy="370" r="2" fill="#FF6B35" opacity="0.7"/>
+    <circle cx="950" cy="348" r="2.5" fill="#FF6B35" opacity="0.75"/>
+  </g>
+
+  <!-- Amazon green dots -->
+  <g filter="url(#softGlow)">
+    <circle cx="722" cy="325" r="3" fill="#52B788" opacity="0.9"/>
+    <circle cx="735" cy="338" r="2.5" fill="#52B788" opacity="0.8"/>
+    <circle cx="712" cy="342" r="3" fill="#52B788" opacity="0.85"/>
+    <circle cx="728" cy="352" r="2" fill="#52B788" opacity="0.7"/>
+    <circle cx="742" cy="320" r="2" fill="#52B788" opacity="0.75"/>
+  </g>
+
+  <!-- Arctic cyan dots -->
+  <g filter="url(#softGlow)">
+    <circle cx="810" cy="138" r="3.5" fill="#48CAE4" opacity="0.9"/>
+    <circle cx="832" cy="132" r="3" fill="#48CAE4" opacity="0.85"/>
+    <circle cx="848" cy="145" r="2.5" fill="#48CAE4" opacity="0.8"/>
+    <circle cx="795" cy="148" r="2.5" fill="#48CAE4" opacity="0.75"/>
+    <circle cx="820" cy="158" r="2" fill="#48CAE4" opacity="0.7"/>
+  </g>
+
+  <!-- Savannas gold dots -->
+  <g filter="url(#softGlow)">
+    <circle cx="838" cy="368" r="2.5" fill="#E09F3E" opacity="0.85"/>
+    <circle cx="852" cy="378" r="2" fill="#E09F3E" opacity="0.75"/>
+    <circle cx="825" cy="382" r="2.5" fill="#E09F3E" opacity="0.8"/>
+  </g>
+
+  <!-- Left column: text content -->
+
+  <!-- Terra Studio label -->
+  <text x="72" y="96" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" letter-spacing="3" fill="#64748b" text-transform="uppercase">TERRA STUDIO</text>
+
+  <!-- Overline -->
+  <text x="72" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" letter-spacing="4" fill="#475569">A VISUAL INVESTIGATION</text>
+
+  <!-- Main title -->
+  <text x="68" y="228" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="700" fill="#f8fafc">Vanishing</text>
+  <text x="68" y="326" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="700" fill="#f8fafc">Earth</text>
+
+  <!-- Subtitle -->
+  <text x="72" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#94a3b8" font-weight="300">How close are we to losing the planet's</text>
+  <text x="72" y="408" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#94a3b8" font-weight="300">most vital ecosystems?</text>
+
+  <!-- Divider line -->
+  <line x1="72" y1="450" x2="340" y2="450" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- Ecosystem color legend -->
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748b">
+    <circle cx="82" cy="476" r="4" fill="#FF6B35"/>
+    <text x="95" y="480">Coral Reefs</text>
+    <circle cx="82" cy="500" r="4" fill="#52B788"/>
+    <text x="95" y="504">Amazon</text>
+    <circle cx="82" cy="524" r="4" fill="#48CAE4"/>
+    <text x="95" y="528">Arctic Ice</text>
+    <circle cx="200" cy="476" r="4" fill="#1B7A5A"/>
+    <text x="213" y="480">Mangroves</text>
+    <circle cx="200" cy="500" r="4" fill="#E09F3E"/>
+    <text x="213" y="504">Grasslands</text>
+  </g>
+
+  <!-- Bottom: terra.do URL -->
+  <text x="72" y="590" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#334155">terra.do/studio</text>
+</svg>

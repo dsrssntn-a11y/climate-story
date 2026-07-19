@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/*
+ * Global styles for "Vanishing Earth" scrollytelling piece.
+ *
+ * PHILOSOPHY: Use Tailwind utility classes for everything possible.
+ * This file only contains:
+ *   1. The Tailwind import
+ *   2. CSS custom properties for the dark theme
+ *   3. Smooth scroll behavior
+ *   4. A serif font import for editorial-style headings
+ *
+ * Students: Keep this file minimal. If you can do it in Tailwind, do it there.
+ */
+
+/* ── Smooth scrolling for anchor navigation ─────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Dark background for the entire page */
+  body {
+    background-color: #020617; /* slate-950 */
+    color: #e2e8f0; /* slate-200 */
+  }
+
+  /*
+   * Serif font for editorial headings.
+   * We use the system's built-in serif stack — no external font download.
+   * This keeps the project zero-dependency for typography.
+   */
+  .font-serif {
+    font-family: "Georgia", "Times New Roman", "Times", serif;
+  }
+}
+
+/* ── Scroll indicator dot animation ─────────────────────────────────────── */
+@keyframes scrollDot {
+  0%   { transform: translateY(0);   opacity: 1; }
+  60%  { transform: translateY(8px); opacity: 0.2; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+
+/* ── Custom scrollbar (subtle, matches dark theme) ──────────────────────── */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #020617;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+}
