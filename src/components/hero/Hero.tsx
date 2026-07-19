@@ -37,12 +37,12 @@ export const Hero = component$(() => {
 
       {/* ── Main title ───────────────────────────────────────────── */}
       <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-white leading-none max-w-4xl">
-        Vanishing Earth
+        The Amazon on the Edge
       </h1>
 
       {/* ── Subtitle ─────────────────────────────────────────────── */}
       <p class="mt-6 text-lg sm:text-xl md:text-2xl text-slate-300 max-w-2xl leading-relaxed font-light">
-        How close are we to losing the planet's most vital ecosystems?
+        How close are we to losing one of the planet's most vital ecosystems?
       </p>
 
       {/* ── Byline ───────────────────────────────────────────────── */}
@@ -59,7 +59,7 @@ export const Hero = component$(() => {
           self-reinforcing and irreversible.
         </p>
         <p>
-          Scroll to explore five ecosystems on the edge.
+          Scroll to explore the focus ecosystem for this project, Amazon on the edge.
         </p>
       </div>
 

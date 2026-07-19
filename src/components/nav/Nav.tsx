@@ -66,7 +66,7 @@ export const Nav = component$(() => {
                 class="absolute right-0 top-full mt-2 w-52 rounded-lg border border-slate-700 bg-slate-900/95 backdrop-blur-md shadow-xl py-1"
                 onClick$={() => { dataMenuOpen.value = false; }}
               >
-                <div class="px-3 py-2 text-xs text-slate-500 uppercase tracking-wider font-medium border-b border-slate-800">
+                <div class="px-3 py-2 text-xs text-slate-400 uppercase tracking-wider font-medium border-b border-slate-800">
                   Download dataset
                 </div>
                 <a
@@ -74,12 +74,12 @@ export const Nav = component$(() => {
                   download="vanishing-earth-ecosystems.json"
                   class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors"
                 >
-                  <svg class="w-4 h-4 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                   </svg>
                   <span>
                     JSON
-                    <span class="block text-xs text-slate-500">Full dataset + regions</span>
+                    <span class="block text-xs text-slate-400">Full dataset + regions</span>
                   </span>
                 </a>
                 <a
@@ -87,12 +87,12 @@ export const Nav = component$(() => {
                   download="vanishing-earth-ecosystems.csv"
                   class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors"
                 >
-                  <svg class="w-4 h-4 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                   </svg>
                   <span>
                     CSV
-                    <span class="block text-xs text-slate-500">Flat table, spreadsheet-ready</span>
+                    <span class="block text-xs text-slate-400">Flat table, spreadsheet-ready</span>
                   </span>
                 </a>
               </div>
@@ -100,7 +100,7 @@ export const Nav = component$(() => {
           </div>
 
           <a
-            href="https://github.com/bodhicodes/vanishing-earth-climate-storytelling"
+            href="https://github.com/dsrssntn-a11y/climate-story"
             target="_blank"
             rel="noopener noreferrer"
             class="text-slate-200 hover:text-white transition-colors"

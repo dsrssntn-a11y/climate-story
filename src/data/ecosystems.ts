@@ -2,28 +2,37 @@
  * ecosystems.ts — Core data for the "Vanishing Earth" scrollytelling piece.
  *
  * Each ecosystem entry mirrors the structure of the NYT tipping-points article:
- * a narrative section with a D3 globe visualization, a threshold/range bar,
- * and key statistics. Data sourced from IPBES, IUCN, WWF Living Planet Report,
- * and peer-reviewed literature (citations in comments).
+ * a narrative section with a D3 globe visualization and key statistics.
  *
  * Students: This file is the single source of truth for all section content.
  * To add a new ecosystem, copy an existing entry and update the fields.
+ *
+ * SOURCING FOR THIS DATASET (Amazon Council / Fiscal Responsibility Frame):
+ * Source boundary — Ground Truth Document, expanded and finalized 2026-07-18
+ * ("Ground Truth Document — Amazon Carbon Source", 6 claims total, audience:
+ * Amazon Region Government Council). All figures are drawn from that
+ * verified claims list; modeled projections (Claims 4 and 5) are flagged as
+ * modeled at the point of use rather than presented as observed fact.
+ *
+ * Claim numbers vs. section numbers are two different sequences — the GTD
+ * has 6 claims (1–6); this piece has 7 narrative sections. The document's
+ * hero metric is explicitly Claim 5 ("Fiscal Resolution") — there is no
+ * "Claim 7". Section-to-claim mapping (see per-section "Source:" comments
+ * below for full citations):
+ *   Section 1 (Once upon a time)   — framing/context, not a single claim
+ *   Section 2 (Every day)          — framing/context, not a single claim
+ *   Section 3 (Until one day)      — Claim 1 (revised) + Claim 2 + the
+ *                                     Contextual Note (Gatti/Saleska/MAAP)
+ *   Section 4 (Because of that 1)  — Claim 3
+ *   Section 5 (Because of that 2)  — Claim 4
+ *   Section 6 (Because of that 3)  — Claim 6
+ *   Section 7 (Until finally)      — Claim 5 (the document's hero metric)
+ *
  */
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-export interface EcosystemThreshold {
-  /** Human-readable label for the bar, e.g. "Area lost" */
-  label: string;
-  /** Current observed value (0–100 scale) */
-  currentValue: number;
-  /** Estimated tipping-point range [low, high] (0–100 scale) */
-  tippingRange: [number, number];
-  /** Unit shown on the bar, e.g. "% lost" */
-  unit: string;
-}
 
 export interface EcosystemStat {
   label: string;
@@ -89,8 +98,6 @@ export interface Ecosystem {
   paragraphs: string[];
   /** Globe rotation & highlight config */
   globe: GlobeConfig;
-  /** Threshold/range bar data */
-  threshold: EcosystemThreshold;
   /** Key stats shown as callout numbers */
   stats: EcosystemStat[];
 }
@@ -100,98 +107,26 @@ export interface Ecosystem {
 // ---------------------------------------------------------------------------
 
 export const ecosystems: Ecosystem[] = [
-  // ── Coral Reefs ──────────────────────────────────────────────────────────
-  // Sources: IPBES 2019, Hughes et al. 2018 (Nature), GCRMN 2021
+  // ── Section 1: Amazon Council / Fiscal Responsibility Frame ─────────────
+  // Story Spine beat: Once upon a time
+  // Framing/context — establishes the pre-Claim-1 assumption (Amazon as a
+  // permanent carbon sink). Not itself drawn from a single GTD claim.
   {
-    id: "coral-reefs",
-    name: "Coral Reefs",
-    subtitle: "The rainforests of the sea are bleaching to death",
+    id: "amazon-council-fiscal-responsibility-frame",
+    name: "Amazon Council / Fiscal Responsibility Frame",
+    subtitle: "The Amazon our Carbon Reservoir",
     paragraphs: [
-      "Coral reefs support roughly a quarter of all marine species while covering less than one percent of the ocean floor. They are among the most sensitive ecosystems on Earth — even half a degree of excess warming can trigger mass bleaching events that turn vibrant reefs into bone-white graveyards.",
-      "Between 2023 and 2024, the world experienced its fourth global bleaching event, the most extensive ever recorded. Over 77 percent of reef areas worldwide experienced bleaching-level heat stress. Scientists warn that at 1.5°C of warming, 70 to 90 percent of reefs could vanish; at 2°C, the loss approaches 99 percent.",
-      "The collapse of reef systems would unravel food webs that half a billion people depend on for protein and livelihood, while exposing coastlines to the full force of storm surges that reefs currently buffer.",
+      "The Amazon was understood as one of Earth's great carbon sinks — a permanent ecological asset.",
+      "For regional governments, that baseline had fiscal meaning: the forest was performing regulatory work that didn't appear on any budget line, and planning could proceed as though it always would.",
     ],
     globe: {
-      center: [150, -18], // Great Barrier Reef, Australia
-      color: "#FF6B35", // Warm coral orange
-      glowColor: "#FF8C61",
-      highlightBounds: [
-        [110, -25],
-        [165, 0],
-      ],
-      // ── Region polygons: traced from actual reef geography ──────
-      regions: [
-        // Great Barrier Reef — narrow strip along NE Australia coast
-        {
-          coordinates: [
-            [142, -10], [144, -13], [146, -16], [148, -19],
-            [150, -22], [152, -24], [153, -23], [151, -20],
-            [149, -17], [147, -14], [145, -11], [143, -9], [142, -10],
-          ],
-        },
-        // Coral Triangle — Indonesia, Philippines, PNG
-        {
-          coordinates: [
-            [115, 7], [120, 9], [125, 7], [128, 4],
-            [132, 0], [136, -3], [140, -6], [142, -8],
-            [140, -10], [135, -8], [130, -6], [125, -7],
-            [120, -8], [115, -6], [110, -4], [108, -1],
-            [110, 3], [113, 5], [115, 7],
-          ],
-        },
-        // Caribbean reef belt
-        {
-          coordinates: [
-            [-88, 23], [-84, 22], [-80, 21], [-76, 19],
-            [-70, 17], [-65, 16], [-60, 13], [-62, 10],
-            [-68, 10], [-75, 12], [-80, 14], [-84, 17],
-            [-87, 20], [-88, 23],
-          ],
-        },
-        // Red Sea reefs
-        {
-          coordinates: [
-            [33, 28], [35, 26], [37, 23], [39, 20],
-            [41, 17], [43, 14], [42, 13], [40, 16],
-            [38, 19], [36, 22], [34, 25], [32, 27], [33, 28],
-          ],
-        },
-      ],
-      pattern: { angle: 45, spacing: 6, lineWidth: 0.8 }, // diagonal hatch
-    },
-    threshold: {
-      label: "Reef area under severe threat",
-      currentValue: 50,
-      tippingRange: [70, 90],
-      unit: "% degraded",
-    },
-    stats: [
-      { label: "Marine species supported", value: "25%" },
-      { label: "People dependent on reefs", value: "500M" },
-      { label: "Reef area bleached (2024)", value: "77%" },
-    ],
-  },
-
-  // ── Amazon Rainforest ────────────────────────────────────────────────────
-  // Sources: Lovejoy & Nobre 2018 (Science Advances), INPE deforestation data
-  {
-    id: "amazon-rainforest",
-    name: "Amazon Rainforest",
-    subtitle: "The planet's lungs are approaching a point of no return",
-    paragraphs: [
-      "The Amazon generates up to half of its own rainfall through a vast recycling loop: trees pump moisture into the atmosphere, which falls again as rain hundreds of miles downwind. Deforestation breaks this cycle. Remove enough forest and the remainder dries out, fires spread, and the world's largest tropical rainforest begins converting into degraded savanna.",
-      "Scientists estimate the tipping point arrives when 20 to 25 percent of the original forest is cleared. As of 2024, roughly 17 percent has been lost — and another 17 percent is significantly degraded. Parts of the southeastern Amazon have already flipped from carbon sink to carbon source.",
-      "The Amazon stores an estimated 150 to 200 billion tonnes of carbon. Its collapse would release decades' worth of human emissions in a geological instant, accelerating warming worldwide.",
-    ],
-    globe: {
-      center: [-62, -5], // Central Amazon
-      color: "#2D6A4F", // Deep forest green
-      glowColor: "#52B788",
+      center: [-62, -5], // Central Amazon basin — establishing shot
+      color: "#2D6A4F", // Calm, stable forest green
+      glowColor: "#74C69D",
       highlightBounds: [
         [-74, -14],
         [-50, 2],
       ],
-      // ── Region polygon: traces the Amazon basin boundary ───────
       regions: [
         {
           coordinates: [
@@ -202,223 +137,286 @@ export const ecosystems: Ecosystem[] = [
             [-74, 0],
           ],
         },
-        // Guiana Shield / northern extension
-        {
-          coordinates: [
-            [-65, 5], [-62, 7], [-59, 7], [-56, 5], [-53, 3],
-            [-52, 1], [-54, 0], [-57, 1], [-60, 2], [-63, 3],
-            [-65, 5],
-          ],
-        },
       ],
-      pattern: { angle: 0, spacing: 5, lineWidth: 0.8 }, // horizontal lines (like NYT)
-    },
-    threshold: {
-      label: "Original forest cleared",
-      currentValue: 17,
-      tippingRange: [20, 25],
-      unit: "% deforested",
+      pattern: { angle: 0, spacing: 6, lineWidth: 0.7 }, // calm horizontal, sparse
     },
     stats: [
-      { label: "Carbon stored", value: "150–200 Gt" },
-      { label: "Species found here", value: "10%" },
-      { label: "Own rainfall generated", value: "~50%" },
+      { label: "Status", value: "Established carbon sink" },
+      { label: "Fiscal treatment", value: "Off balance sheet" },
     ],
   },
 
-  // ── Arctic Sea Ice ───────────────────────────────────────────────────────
-  // Sources: NSIDC, IPCC AR6 WG1, Notz & Stroeve 2016 (Science)
+  // ── Section 2: Is This a Constant? ───────────────────────────────────────
+  // Story Spine beat: Every day
+  // Framing/context — same pre-Claim-1 assumption, extended to
+  // infrastructure/fiscal planning. Not itself drawn from a single GTD claim.
   {
-    id: "arctic-sea-ice",
-    name: "Arctic Sea Ice",
-    subtitle: "The white shield that keeps the planet cool is vanishing",
+    id: "static-assumption",
+    name: "Is This a Constant?",
+    subtitle: "The Static Assumption",
     paragraphs: [
-      "Arctic sea ice acts as a giant mirror, reflecting up to 80 percent of incoming sunlight back to space. As it melts, the dark ocean beneath absorbs that energy instead, creating a feedback loop that accelerates warming far beyond the Arctic. This phenomenon — ice-albedo feedback — is a key reason the Arctic is warming nearly four times faster than the global average.",
-      "September sea-ice extent has declined by roughly 13 percent per decade since satellite records began in 1979. Multiple climate models now project ice-free Arctic summers as early as the 2030s — even under moderate emission scenarios. The 2024 minimum was among the lowest on record.",
-      "The loss of Arctic ice reshapes weather patterns across the Northern Hemisphere, destabilizes permafrost, threatens polar ecosystems, and opens feedback loops that make further warming increasingly difficult to reverse.",
+      "Infrastructure was approved, energy systems designed, and fiscal frameworks built against that assumption of constancy.",
+      "The Amazon's stability was treated as a fixed input — not a managed asset with its own risk exposure, not a variable that could move against the budget.",
     ],
     globe: {
-      center: [0, 90], // North Pole
-      color: "#48CAE4", // Glacial cyan
-      glowColor: "#90E0EF",
+      center: [-62, -5], // Same basin-wide view — assumption still holds region-wide
+      color: "#3E7C4A", // Slightly more muted green — quiet pressure building
+      glowColor: "#7FB585",
       highlightBounds: [
-        [-180, 66],
-        [180, 90],
+        [-74, -14],
+        [-50, 2],
       ],
-      // ── Region polygon: Arctic ice cap ──
-      // IMPORTANT: GeoJSON exterior rings must be counter-clockwise.
-      // For polar regions this means going WESTWARD (decreasing longitude).
       regions: [
         {
           coordinates: [
-            [0, 72], [-20, 73], [-40, 75], [-60, 77], [-80, 79],
-            [-100, 80], [-120, 78], [-140, 76], [-160, 74],
-            [180, 73], [160, 74], [140, 75], [120, 77], [100, 79],
-            [80, 80], [60, 78], [40, 76], [20, 74], [0, 72],
-          ],
-        },
-        // Greenland ice sheet (reversed for CCW winding)
-        {
-          coordinates: [
-            [-55, 82], [-57, 78], [-58, 75], [-58, 70],
-            [-55, 67], [-50, 64], [-40, 65], [-30, 68],
-            [-22, 72], [-18, 76], [-20, 80], [-35, 82],
-            [-45, 83], [-55, 82],
+            [-74, 0], [-72, 2], [-70, 4], [-67, 4], [-64, 3],
+            [-60, 2], [-57, 1], [-54, 0], [-52, -2], [-50, -4],
+            [-50, -7], [-52, -9], [-55, -12], [-58, -14], [-62, -14],
+            [-66, -13], [-69, -11], [-72, -8], [-74, -5], [-75, -2],
+            [-74, 0],
           ],
         },
       ],
-      pattern: { angle: 60, spacing: 4, lineWidth: 0.7 }, // dense angled hatch
-    },
-    threshold: {
-      label: "Summer ice volume lost since 1979",
-      currentValue: 75,
-      tippingRange: [80, 95],
-      unit: "% volume lost",
+      pattern: { angle: 0, spacing: 5, lineWidth: 0.75 }, // still calm, slightly denser
     },
     stats: [
-      { label: "Warming rate vs global avg", value: "4×" },
-      { label: "Decline per decade", value: "13%" },
-      { label: "Ice-free summers projected", value: "~2030s" },
+      { label: "Assumption embedded in", value: "Infrastructure & fiscal planning" },
+      { label: "Treated as", value: "Fixed input, not a risk variable" },
     ],
   },
 
-  // ── Mangroves & Coastal Wetlands ─────────────────────────────────────────
-  // Sources: Global Mangrove Watch, IUCN Red List of Ecosystems, Friess et al. 2019
+  // ── Section 3: The Old Story Breaks ──────────────────────────────────────
+  // Story Spine beat: Until one day
+  // Source: Ground Truth Document, Claim 2 (Confirmed) — 791M±86M tonnes CO2,
+  //   sevenfold increase, fire surpassed deforestation for first time on
+  //   record. Bourgoin et al. 2025, Biogeosciences (doi:10.5194/bg-22-5247-2025);
+  //   EC Joint Research Centre press release, Oct 2025.
+  // + Claim 1 (Revised) — Gatti et al. 2021, Nature (doi:10.1038/s41586-021-03629-6).
+  //   GTD notes this as basin-wide-overstated if unqualified; "has not
+  //   uniformly flipped" phrasing below reflects that revision.
+  // + Contextual Note (three-source synthesis behind "three independent
+  //   studies converge"): Gatti et al. 2021 (Nature); Saleska et al. 2023,
+  //   Atmospheric Chemistry and Physics, "Atmospheric CO2 inversion reveals
+  //   the Amazon as a minor carbon source" (acp.copernicus.org/articles/23/9685/2023/);
+  //   MAAP #220 (2024), via Amazon Conservation
+  //   (amazonconservation.org/new-maap-report-covers-key-cases-of-carbon-loss-gain-in-the-amazon/).
   {
-    id: "mangroves",
-    name: "Mangroves & Wetlands",
-    subtitle: "Earth's coastal armor is being stripped away",
+    id: "its-complicated",
+    name: "The Old Story Breaks",
+    subtitle: "It's not immune to climate change",
     paragraphs: [
-      "Mangrove forests form a living barrier between land and sea, absorbing wave energy, trapping sediment, and storing up to four times more carbon per hectare than tropical rainforests. They are nurseries for fish, shelters for biodiversity, and the first line of defense for hundreds of millions of coastal people during storms.",
-      "Since the 1980s, over 35 percent of the world's mangroves have been lost — cleared for aquaculture, coastal development, and agriculture. Although the rate of loss has slowed in some regions, other coastal wetlands including salt marshes and seagrass meadows continue to decline at alarming rates.",
-      "When mangroves are destroyed, the carbon locked in their dense, waterlogged soils is released. The loss of a single hectare of mangrove can emit as much carbon as three to five hectares of tropical forest cleared on dry land.",
+      "Parts of the Amazon are already functioning as net carbon sources. In 2024, fire-driven degradation alone released an estimated 791 million metric tons of carbon dioxide (CO₂) — a sevenfold increase from the previous two years — and for the first time on record surpassed deforestation as the primary driver of Amazon carbon emissions.",
+      "The basin as a whole has not uniformly flipped, but the margin is narrow and the trend is adverse. Three independent studies using different methods and geographic scopes converge on the same direction: the Amazon's carbon balance is under compounding stress.",
     ],
     globe: {
-      center: [90, 10], // Sundarbans / Southeast Asia
-      color: "#1B7A5A", // Deep teal-green
-      glowColor: "#40916C",
+      center: [-56, -10], // Southeastern "arc of deforestation" — Mato Grosso/Rondônia/Pará
+      color: "#D97706", // Warning amber — the discovery moment
+      glowColor: "#F0A94E",
       highlightBounds: [
-        [85, -8],
-        [115, 23],
+        [-65, -16],
+        [-48, -4],
       ],
-      // ── Region polygons: major mangrove/wetland zones ──────────
       regions: [
-        // Sundarbans — Bangladesh/India coast (world's largest mangrove)
         {
           coordinates: [
-            [86, 22.5], [88, 23], [90, 22.5], [91, 21.5],
-            [90.5, 20.5], [89, 20], [87, 20.5], [86, 21.5], [86, 22.5],
-          ],
-        },
-        // Myanmar / Bay of Bengal coast
-        {
-          coordinates: [
-            [92, 20], [94, 18], [96, 16], [97, 14],
-            [98, 11], [97, 9], [95, 8],
-            [94, 10], [95, 13], [93, 15], [91, 18], [92, 20],
-          ],
-        },
-        // Malay Peninsula & Sumatra coast
-        {
-          coordinates: [
-            [99, 7], [100, 5], [101, 3], [103, 1],
-            [105, -1], [106, -3], [104, -4],
-            [102, -2], [100, 0], [99, 2], [98, 5], [99, 7],
-          ],
-        },
-        // Borneo / Indonesia mangrove coast
-        {
-          coordinates: [
-            [108, 3], [110, 2], [112, 0], [114, -2],
-            [116, -1], [117, 1], [116, 3],
-            [113, 3], [110, 3], [108, 3],
-          ],
-        },
-        // East African mangroves (Mozambique / Tanzania)
-        {
-          coordinates: [
-            [39, -4], [40, -6], [41, -8], [40, -11],
-            [38, -14], [36, -15], [35, -13],
-            [36, -10], [37, -7], [38, -5], [39, -4],
+            [-58, -4], [-54, -3], [-50, -4], [-48, -7],
+            [-49, -10], [-52, -13], [-56, -15], [-60, -14],
+            [-62, -11], [-61, -8], [-59, -6], [-58, -4],
           ],
         },
       ],
-      pattern: { angle: 90, spacing: 5, lineWidth: 0.8 }, // vertical lines
-    },
-    threshold: {
-      label: "Global mangrove area lost",
-      currentValue: 35,
-      tippingRange: [40, 60],
-      unit: "% destroyed",
+      pattern: { angle: 30, spacing: 5, lineWidth: 0.8 }, // unease creeping in
     },
     stats: [
-      { label: "Carbon storage vs rainforest", value: "4×" },
-      { label: "Coastal people protected", value: "100M+" },
-      { label: "Fish species nurseries", value: "75%" },
+      { label: "Fire-driven CO₂ emissions (2024)", value: "791M tonnes" },
+      { label: "Increase vs. prior two years", value: "7×" },
+      { label: "Independent studies confirming trend", value: "3" },
     ],
   },
 
-  // ── Grasslands & Savannas ────────────────────────────────────────────────
-  // Sources: WWF Plowprint Report, IPBES Land Degradation Assessment 2018
+  // ── Section 4: Drought on the Grid ───────────────────────────────────────
+  // Story Spine beat: Because of that (1)
+  // Source: Ground Truth Document, Claim 3 (Confirmed) — hydropower shares
+  //   and June 2023 power cuts. World Weather Attribution, Jan 2024
+  //   (rapid-attribution study using peer-reviewed methods, not a journal
+  //   article) — worldweatherattribution.org (see about page for full link).
+  //   GTD caveat: the hydropower percentages themselves originate from
+  //   USAID data cited inside the WWA report, not independently verified by
+  //   WWA — flagged here per the source document's own note.
   {
-    id: "grasslands",
-    name: "Grasslands & Savannas",
-    subtitle: "The world's most converted biome hides in plain sight",
+    id: "drought-on-the-grid",
+    name: "Drought on the Grid",
+    subtitle: "When forest loss becomes an energy risk",
     paragraphs: [
-      "Grasslands and savannas once covered roughly 40 percent of Earth's land surface. They are among the most productive ecosystems on the planet — their deep root systems store vast amounts of carbon underground, their soils filter water, and they support megafauna migrations that have shaped landscapes for millions of years.",
-      "Yet grasslands are the world's most imperiled and least protected biome. In North America alone, the Great Plains lose roughly 1.6 million acres per year to crop conversion. Across Africa, savanna ecosystems face compounding pressures from agricultural expansion, overgrazing, and shifting rainfall patterns driven by climate change.",
-      "Unlike forests, which can regrow from a clear-cut, grassland soils take centuries to rebuild once plowed. When these carbon-rich soils are broken, the carbon accumulated over millennia oxidizes and enters the atmosphere within years.",
+      "The infrastructure the region depends on became directly exposed. Amazon countries generate the majority of their electricity from hydropower — Brazil at 80%, Colombia at 79%, Ecuador and Peru at 55% each, and Bolivia at 32%.",
+      "The 2023–24 drought pushed dam capacities toward their limits and triggered power cuts as early as June 2023. Energy stability, long assumed as fixed, is now a variable tied directly to forest and climate conditions.",
     ],
     globe: {
-      center: [25, 0], // East African savannas
-      color: "#E09F3E", // Warm savanna gold
-      glowColor: "#F0C75E",
+      center: [-70, -6], // Spans Andean-Amazon interface — Peru, Ecuador, Colombia, Brazil
+      color: "#C2410C", // Burnt orange — drought & grid strain
+      glowColor: "#E8792B",
       highlightBounds: [
-        [10, -25],
-        [42, 10],
+        [-79, -18],
+        [-48, 4],
       ],
-      // ── Region polygons: major savanna/grassland zones ─────────
       regions: [
-        // East African savanna belt (Serengeti, Masai Mara, down to Zambia)
         {
           coordinates: [
-            [29, 8], [33, 5], [36, 2], [38, -1],
-            [40, -4], [40, -8], [38, -12], [35, -15],
-            [32, -18], [29, -20], [27, -22],
-            [25, -20], [26, -16], [27, -12],
-            [26, -8], [25, -4], [26, 0], [27, 4], [29, 8],
-          ],
-        },
-        // West African savanna (Sahel transition zone)
-        {
-          coordinates: [
-            [-10, 14], [-5, 13], [0, 12], [5, 11],
-            [10, 10], [14, 9], [15, 7],
-            [10, 7], [5, 8], [0, 9], [-5, 10],
-            [-10, 11], [-12, 13], [-10, 14],
-          ],
-        },
-        // Southern African veld (partial)
-        {
-          coordinates: [
-            [24, -25], [27, -24], [30, -26], [32, -28],
-            [30, -30], [27, -31], [24, -30],
-            [22, -28], [22, -26], [24, -25],
+            [-78, 2], [-74, 4], [-70, 4], [-65, 3], [-60, 2],
+            [-55, 0], [-50, -3], [-48, -6], [-50, -9],
+            [-55, -12], [-62, -13], [-70, -12], [-76, -9],
+            [-79, -4], [-78, 2],
           ],
         },
       ],
-      pattern: { angle: -30, spacing: 6, lineWidth: 0.8 }, // reverse diagonal
-    },
-    threshold: {
-      label: "Original grassland converted",
-      currentValue: 50,
-      tippingRange: [55, 70],
-      unit: "% converted",
+      pattern: { angle: 45, spacing: 4, lineWidth: 0.9 }, // steeper diagonal, denser — risk
     },
     stats: [
-      { label: "Earth's land surface", value: "40%" },
-      { label: "Great Plains lost/year", value: "1.6M acres" },
-      { label: "Soil carbon rebuild time", value: "Centuries" },
+      { label: "Brazil electricity from hydropower", value: "80%" },
+      { label: "Colombia electricity from hydropower", value: "79%" },
+      { label: "Ecuador & Peru hydropower share", value: "55% each" },
+      { label: "Bolivia electricity from hydropower", value: "32%" },
+    ],
+  },
+
+  // ── Section 5: The Price Tag, Oof ────────────────────────────────────────
+  // Story Spine beat: Because of that (2)
+  // Source: Ground Truth Document, Claim 4 (Confirmed, modeled projection) —
+  //   $256.6B cumulative regional GDP loss through 2050 (Brazil $184.1B,
+  //   Peru $35.3B, Colombia $17.6B, Bolivia $11.4B, Ecuador $8.2B).
+  //   Banerjee et al. 2022, Environmental Research Letters
+  //   (doi:10.1088/1748-9326/aca3b8); also indexed via USGS publication
+  //   record. Modeled via the IEEM Platform, 2019 base year — flag as a
+  //   conservative lower-bound estimate, not a direct measurement.
+  {
+    id: "the-price-tag",
+    name: "The Price Tag, Oof",
+    subtitle: "Brazil bears most of the loss",
+    paragraphs: [
+      "The financial exposure compounds. A conservative modeled estimate puts the cumulative regional Gross Domestic Product (GDP) loss from crossing an Amazon tipping point at US$256.6 billion through 2050, across Brazil, Peru, Colombia, Bolivia, and Ecuador.",
+      "Brazil alone accounts for US$184.1 billion of that projected loss.",
+    ],
+    globe: {
+      center: [-52, -10], // Brazil-centric — where most of the projected loss lands
+      color: "#B91C1C", // Fiscal alarm red
+      glowColor: "#E05252",
+      highlightBounds: [
+        [-70, -18],
+        [-42, 0],
+      ],
+      regions: [
+        {
+          coordinates: [
+            [-68, 2], [-64, 3], [-60, 2], [-56, 1], [-52, -1],
+            [-50, -4], [-49, -7], [-51, -10], [-55, -13],
+            [-60, -13], [-65, -11], [-68, -8], [-70, -4], [-68, 2],
+          ],
+        },
+      ],
+      pattern: { angle: 60, spacing: 3.5, lineWidth: 1.0 }, // dense, urgent
+    },
+    stats: [
+      { label: "Cumulative regional GDP loss (to 2050, modeled)", value: "US$256.6B" },
+      { label: "Brazil's share of projected loss (modeled)", value: "US$184.1B" },
+      { label: "Peru's share of projected loss (modeled)", value: "US$35.3B" },
+      { label: "Colombia's share of projected loss (modeled)", value: "US$17.6B" },
+      { label: "Bolivia's share of projected loss (modeled)", value: "US$11.4B" },
+      { label: "Ecuador's share of projected loss (modeled)", value: "US$8.2B" },
+    ],
+  },
+
+  // ── Section 6: Ghost in the Books ─────────────────────────────────────────
+  // Story Spine beat: Because of that (3)
+  // Source: Ground Truth Document, Claim 6 (Confirmed, qualitative finding) —
+  //   fire-driven degradation undercounted/missed in national accounting and
+  //   international policy frameworks. Same source as Claim 2: Bourgoin et
+  //   al. 2025, Biogeosciences (doi:10.5194/bg-22-5247-2025); EC Joint
+  //   Research Centre, Oct 2025. GTD caveat: avoid absolute phrasing — the
+  //   finding is that degradation is "frequently" missed, not universally
+  //   invisible to accounting systems.
+  {
+    id: "ghost-in-the-books",
+    name: "Ghost in the Books",
+    subtitle: "The damage is bigger than the books show",
+    paragraphs: [
+      "The liability is growing in ways that may not yet be fully visible in official figures. Fire-driven degradation — now the primary emissions driver — is frequently undercounted or missed in national accounting systems and may not be consistently captured by international policy frameworks.",
+      "Degraded forests lose significant biomass and ecological function while appearing intact from above, which means material ecological liability can accumulate before it registers in official figures.",
+    ],
+    globe: {
+      center: [-58, -9], // Same arc-of-deforestation zone — the hidden liability
+      // Lightened from the original #5B2333 — that dark maroon rendered at
+      // ~1.7:1 contrast against the page background (bg-slate-950 #020617),
+      // failing WCAG AA even for large bold text (needs 3:1). #C2607D keeps
+      // the maroon/rose "hidden liability" tone at ~5:1 contrast.
+      color: "#C2607D",
+      glowColor: "#E3A8BC",
+      highlightBounds: [
+        [-68, -16],
+        [-46, -2],
+      ],
+      regions: [
+        {
+          coordinates: [
+            [-60, -2], [-56, -2], [-52, -3], [-49, -6],
+            [-48, -9], [-50, -12], [-54, -15], [-59, -16],
+            [-63, -14], [-64, -10], [-62, -6], [-60, -2],
+          ],
+        },
+      ],
+      pattern: { angle: -45, spacing: 3, lineWidth: 1.0 }, // cross-diagonal, densest — hidden crisis
+    },
+    stats: [
+      { label: "Primary emissions driver", value: "Fire-driven degradation" },
+      { label: "Accounting visibility", value: "Undercounted / off-ledger" },
+      { label: "Canopy status", value: "Appears intact from above" },
+    ],
+  },
+
+  // ── Section 7: The Better Bet ─────────────────────────────────────────────
+  // Story Spine beat: Until finally
+  // Source: Ground Truth Document, Claim 5 — ★ THE DOCUMENT'S HERO METRIC
+  //   ("Fiscal Resolution"). $339.3B additional regional wealth, $29.5B
+  //   public investment return, both projected through 2050. Banerjee et
+  //   al. 2022, Environmental Research Letters (doi:10.1088/1748-9326/aca3b8) —
+  //   same model/base year as Claim 4 (IEEM Platform, 2019 base year).
+  //   Modeled projection, not a realized figure. This is the claim the GTD
+  //   says "anchors the council resolution beat of the Story Spine" — i.e.
+  //   this section. There is no "Claim 7" in the source document.
+  {
+    id: "the-better-bet",
+    name: "The Better Bet",
+    subtitle: "Spend less, gain more",
+    paragraphs: [
+      "The same modeling that produced the loss figure also produced its inverse. Strategies to avert the tipping point — reducing deforestation, improving fire management, investing in climate-adapted agriculture — are projected to generate US$339.3 billion in additional regional wealth.",
+      "The estimated public investment return is US$29.5 billion. This is not a cost to the council. The evidence in Claims 4 and 5 shows acting within the available window is more cost-effective than responding after.",
+    ],
+    globe: {
+      center: [-65, -8], // Pulls back to the full 5-country region — shared upside
+      color: "#1B7A5A", // Hopeful teal-green — resolution
+      glowColor: "#52C97C",
+      highlightBounds: [
+        [-79, -20],
+        [-44, 4],
+      ],
+      regions: [
+        {
+          coordinates: [
+            [-79, 3], [-74, 5], [-68, 5], [-62, 4], [-56, 2],
+            [-50, -1], [-46, -5], [-48, -9], [-52, -13],
+            [-58, -16], [-65, -17], [-72, -15], [-78, -11],
+            [-81, -5], [-79, 3],
+          ],
+        },
+      ],
+      pattern: { angle: 0, spacing: 6, lineWidth: 0.7 }, // returns to calm horizontal — resolution
+    },
+    stats: [
+      { label: "Additional regional wealth generated (modeled)", value: "US$339.3B" },
+      { label: "Public investment return (modeled)", value: "US$29.5B" },
+      // Not in the verified claims list — this is 339.3 ÷ 29.5, computed
+      // here rather than sourced. Labeled "(derived)" so it isn't mistaken
+      // for a verified figure alongside the two above it.
+      { label: "Benefit-to-cost ratio (derived)", value: "~11.5×" },
     ],
   },
 ];

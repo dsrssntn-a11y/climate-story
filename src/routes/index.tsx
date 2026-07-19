@@ -8,7 +8,6 @@
  * │  Ecosystem Section 1: Coral Reefs   │
  * │    → Globe (rotated to location)    │
  * │    → Narrative text                 │
- * │    → Threshold bar                  │
  * │    → Key stats                      │
  * ├─────────────────────────────────────┤
  * │  Ecosystem Section 2: Amazon        │
@@ -20,11 +19,11 @@
  * └─────────────────────────────────────┘
  *
  * Each section is wrapped in <ScrollSection> which handles the
- * Intersection Observer-based visibility detection. Child components
- * (Globe, ThresholdBar) receive `isVisible` to trigger animations.
+ * Intersection Observer-based visibility detection. The Globe child
+ * component receives `isVisible` to trigger its entrance animation.
  *
  * DATA FLOW:
- * ecosystems.ts → map() → ScrollSection + Globe + ThresholdBar
+ * ecosystems.ts → map() → ScrollSection + Globe
  */
 
 import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
@@ -34,7 +33,12 @@ import { Nav } from "~/components/nav/Nav";
 import { Hero } from "~/components/hero/Hero";
 import { OverviewGlobe } from "~/components/overview-globe/OverviewGlobe";
 import { Globe } from "~/components/globe/Globe";
-import { ThresholdBar } from "~/components/threshold-bar/ThresholdBar";
+import { AmazonBranchScene } from "~/components/birds/AmazonBranchScene";
+import { BirdLayer } from "~/components/birds/BirdLayer";
+import { BrazilMarker } from "~/components/globe/BrazilMarker";
+import { GhostDrift } from "~/components/globe/GhostDrift";
+import { GrowthHighlight } from "~/components/globe/GrowthHighlight";
+import { TemperatureMarker } from "~/components/globe/TemperatureMarker";
 import { ScrollSection } from "~/components/scroll-section/ScrollSection";
 
 // ---------------------------------------------------------------------------
@@ -57,13 +61,16 @@ const EcosystemSection = component$(
       const el = sectionRef.value;
       if (!el) return;
 
+      // Matches ScrollSection's own observer threshold (0.15) — kept in sync
+      // so inner content (globe/bar/stats) doesn't start animating before
+      // the section wrapper itself has begun revealing.
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             isVisible.value = true;
           }
         },
-        { threshold: 0.1 },
+        { threshold: 0.15 },
       );
 
       observer.observe(el);
@@ -74,7 +81,16 @@ const EcosystemSection = component$(
       <ScrollSection id={eco.id} color={eco.globe.color}>
         <div ref={sectionRef}>
           {/* ── Globe visualization ──────────────────────────────── */}
-          <div class="mb-12">
+          {/*
+            w-full max-w-[480px] mx-auto matches the canvas's own sizing
+            exactly, so this wrapper's box == the canvas's box at every
+            viewport width. Without it, this div spans the full content
+            column (e.g. 896px) while the canvas caps at 480px centered
+            inside — BirdLayer's percentage-based positions would then be
+            calculated against the wrong (much wider) box and never line
+            up with the rendered globe.
+          */}
+          <div class={["relative w-full max-w-[480px] mx-auto", props.index === 0 ? "mb-6" : "mb-12"]}>
             <Globe
               center={eco.globe.center}
               color={eco.globe.color}
@@ -84,15 +100,32 @@ const EcosystemSection = component$(
               pattern={eco.globe.pattern}
               isVisible={isVisible.value}
             />
+            {props.index === 1 && <BirdLayer isVisible={isVisible} />}
+            {props.index === 2 && <TemperatureMarker isVisible={isVisible} />}
+            {props.index === 4 && <BrazilMarker isVisible={isVisible} />}
+            {props.index === 5 && <GhostDrift isVisible={isVisible} />}
+            {props.index === 6 && <GrowthHighlight isVisible={isVisible} />}
           </div>
+
+          {/* ── Standalone vignette between globe and title (Section 1 only) —
+               deliberately NOT part of the globe overlay, so the globe reads
+               as a clean data visualization with nothing perched on it. */}
+          {props.index === 0 && (
+            <div class="mb-4">
+              <AmazonBranchScene isVisible={isVisible} />
+            </div>
+          )}
 
           {/* ── Section title & subtitle ─────────────────────────── */}
           <div class="text-center mb-12">
-            {/* Section number — small and muted */}
-            <span
-              class="inline-block text-xs font-mono tracking-widest uppercase mb-4"
-              style={{ color: eco.globe.color }}
-            >
+            {/* Section number — small and muted.
+                Fixed neutral instead of eco.globe.color: at text-xs size,
+                several per-section accent colors (e.g. the old Section 6
+                maroon) fall below the 4.5:1 WCAG AA ratio needed for small
+                text against bg-slate-950. text-slate-300 passes comfortably
+                for all sections; per-section color identity still comes
+                through via the globe, stat numbers, and border glow. */}
+            <span class="inline-block text-xs font-mono tracking-widest uppercase mb-4 text-slate-300">
               {String(props.index + 1).padStart(2, "0")}
             </span>
 
@@ -119,24 +152,12 @@ const EcosystemSection = component$(
                     : "opacity-0 translate-y-4",
                 ]}
                 style={{
-                  transitionDelay: `${400 + i * 200}ms`,
+                  transitionDelay: `${300 + i * 150}ms`,
                 }}
               >
                 {paragraph}
               </p>
             ))}
-          </div>
-
-          {/* ── Threshold bar ────────────────────────────────────── */}
-          <div class="mb-16">
-            <ThresholdBar
-              label={eco.threshold.label}
-              currentValue={eco.threshold.currentValue}
-              tippingRange={eco.threshold.tippingRange}
-              unit={eco.threshold.unit}
-              color={eco.globe.color}
-              isVisible={isVisible.value}
-            />
           </div>
 
           {/* ── Key statistics — three-column callout ────────────── */}
@@ -145,17 +166,35 @@ const EcosystemSection = component$(
               <div
                 key={i}
                 class={[
-                  "text-center transition-all duration-700 ease-out flex-1 min-w-[120px] sm:min-w-0",
+                  // min-w-[120px] applies at every breakpoint (no
+                  // sm:min-w-0 override) so items wrap to a new row instead
+                  // of shrinking indefinitely — sections with more than 3
+                  // stats (e.g. the 6-stat GDP breakdown) would otherwise
+                  // cram every column into one row and overflow into each
+                  // other at sm+ widths, since unbreakable strings like
+                  // "US$256.6B" can't wrap onto a second line to compensate.
+                  "text-center transition-all duration-700 ease-out flex-1 min-w-[120px]",
                   isVisible.value
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-4",
                 ]}
                 style={{
-                  transitionDelay: `${800 + i * 150}ms`,
+                  transitionDelay: `${550 + i * 120}ms`,
                 }}
               >
                 <div
-                  class="text-2xl sm:text-3xl font-bold font-mono"
+                  class={[
+                    "font-bold",
+                    // Short numeric/percentage values (e.g. "80%", "US$256.6B")
+                    // read well as big bold mono type. Longer descriptive
+                    // phrases (e.g. "Infrastructure & fiscal planning") were
+                    // rendered at the same giant size and wrapped to 3-4
+                    // lines, colliding with the neighboring stat column.
+                    // Drop to a smaller, non-mono size for those instead.
+                    stat.value.length > 16
+                      ? "text-base sm:text-lg leading-snug"
+                      : "text-2xl sm:text-3xl font-mono",
+                  ]}
                   style={{ color: eco.globe.color }}
                 >
                   {stat.value}
@@ -260,62 +299,52 @@ export default component$(() => {
             </p>
             <ul class="text-sm text-slate-100 leading-relaxed space-y-2 max-w-lg mx-auto list-none p-0">
               <li>
-                <a href="https://www.ipbes.net/global-assessment" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  IPBES Global Assessment (2019)
+                <a href="https://doi.org/10.1038/s41586-021-03629-6" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
+                  Gatti et al. 2021, Nature — Amazonia as a carbon source
                 </a>
               </li>
               <li>
-                <a href="https://www.iucnrle.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  IUCN Red List of Ecosystems
+                <a href="https://bg.copernicus.org/articles/22/5247/2025/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
+                  Bourgoin et al. 2025, Biogeosciences — 2024 Amazon fire emissions
                 </a>
               </li>
               <li>
-                <a href="https://livingplanet.panda.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  WWF Living Planet Report
+                <a href="https://joint-research-centre.ec.europa.eu/jrc-news-and-updates/unprecedented-amazon-fires-2024-fuel-record-co2-emissions-2025-10-08_en" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
+                  EC Joint Research Centre — Unprecedented Amazon fires 2024 (Oct 2025)
                 </a>
               </li>
               <li>
-                <a href="https://www.ipcc.ch/assessment-report/ar6/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  IPCC Sixth Assessment Report (AR6)
+                <a href="https://www.worldweatherattribution.org/climate-change-not-el-nino-main-driver-of-exceptional-drought-in-highly-vulnerable-amazon-river-basin/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
+                  World Weather Attribution (Jan 2024) — 2023–24 Amazon drought
                 </a>
               </li>
               <li>
-                <a href="https://www.globalcarbonproject.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  Global Carbon Project
+                <a href="https://iopscience.iop.org/article/10.1088/1748-9326/aca3b8" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
+                  Banerjee et al. 2022, Environmental Research Letters — GDP loss/gain modeling
                 </a>
               </li>
               <li>
-                <a href="https://gcrmn.net/2020-report/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  GCRMN Status of Coral Reefs of the World
-                </a>
-              </li>
-              <li>
-                <a href="https://nsidc.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  National Snow and Ice Data Center (NSIDC)
-                </a>
-              </li>
-              <li>
-                <a href="https://www.globalmangrovewatch.org/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  Global Mangrove Watch
-                </a>
-              </li>
-              <li>
-                <a href="https://www.science.org/doi/10.1126/science.abn7950" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
-                  Armstrong McKay et al. — Exceeding 1.5°C could trigger multiple tipping points (Science, 2022)
+                <a href="https://www.usgs.gov/publications/can-we-avert-amazon-tipping-point-economic-and-environmental-costs" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline decoration-slate-600 underline-offset-2">
+                  USGS — Can we avert an Amazon tipping point?
                 </a>
               </li>
             </ul>
+            <p class="text-sm text-slate-100 leading-relaxed max-w-lg mx-auto mt-4">
+              Compiled via an internal Ground Truth Document (verified
+              claims list, finalized 2026-07-18). Modeled projections above
+              are flagged as modeled where they appear.
+            </p>
             <p class="text-sm text-slate-200 mt-8">
               Built with Qwik, D3.js, Tailwind CSS, and TopoJSON.
               <br />A Terra Studio capstone project — AI + Storytelling.
             </p>
 
             {/* Open source credits */}
-            <div class="flex flex-wrap items-center justify-center gap-y-2 gap-x-4 mt-6 text-xs text-slate-600">
+            <div class="flex flex-wrap items-center justify-center gap-y-2 gap-x-4 mt-6 text-xs text-slate-400">
               <span class="whitespace-nowrap">MIT License · Open Source</span>
               <span aria-hidden="true" class="hidden sm:inline">·</span>
               <a
-                href="https://github.com/bodhicodes/vanishing-earth-climate-storytelling"
+                href="https://github.com/dsrssntn-a11y/climate-story"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="hover:text-slate-100 transition-colors whitespace-nowrap"
@@ -338,13 +367,24 @@ export default component$(() => {
 // Document Head — SEO and social sharing metadata
 // ---------------------------------------------------------------------------
 
-export const head: DocumentHead = {
-  title: "Vanishing Earth — How Close Are We to Losing the Planet's Most Vital Ecosystems?",
+// TODO before deploy:
+// 1. og:image / twitter:image still point at the placeholder og-image.svg.
+//    Swap in your real image URL once you have it (recommend an absolute
+//    https:// URL — most crawlers, including Facebook's and Slack's, won't
+//    reliably fetch relative paths or non-public preview URLs).
+// 2. og:url is now derived from the live request (`url.href`) rather than
+//    hardcoded, so it automatically matches whatever domain this is served
+//    from (production Vercel URL, a preview deployment, or localhost) —
+//    nothing to fill in here, but confirm your production domain is the one
+//    you want indexed once it's live, since Vercel preview URLs will also
+//    generate correct-but-not-final og:url values.
+export const head: DocumentHead = ({ url }) => ({
+  title: "Vanishing Earth — Amazon Council: A Fiscal Responsibility Frame",
   meta: [
     {
       name: "description",
       content:
-        "An interactive scrollytelling exploration of five ecosystems approaching dangerous tipping points: coral reefs, the Amazon, Arctic ice, mangroves, and grasslands.",
+        "An interactive scrollytelling brief for the Amazon Council: how a tipping point in the Amazon rainforest becomes a fiscal risk — from carbon-sink assumption to a costed case for early action.",
     },
     // Open Graph
     {
@@ -353,14 +393,19 @@ export const head: DocumentHead = {
     },
     {
       property: "og:title",
-      content: "Vanishing Earth — Biodiversity Tipping Points",
+      content: "Amazon Council — A Fiscal Responsibility Frame",
     },
     {
       property: "og:description",
       content:
-        "Scroll through five ecosystems on the edge of collapse. A data-driven visual story.",
+        "The Amazon's tipping point, priced: hydropower exposure, modeled GDP loss, and the cost-effective case for acting inside the window.",
     },
     {
+      property: "og:url",
+      content: url.href,
+    },
+    {
+      // TODO: replace with your real image URL once available.
       property: "og:image",
       content: "https://vanishing-earth.vercel.app/og-image.svg",
     },
@@ -379,16 +424,17 @@ export const head: DocumentHead = {
     },
     {
       name: "twitter:title",
-      content: "Vanishing Earth — Biodiversity Tipping Points",
+      content: "Amazon Council — A Fiscal Responsibility Frame",
     },
     {
       name: "twitter:description",
       content:
-        "Scroll through five ecosystems on the edge of collapse. A data-driven visual story.",
+        "The Amazon's tipping point, priced: hydropower exposure, modeled GDP loss, and the cost-effective case for acting inside the window.",
     },
     {
+      // TODO: replace with your real image URL once available.
       name: "twitter:image",
       content: "https://vanishing-earth.vercel.app/og-image.svg",
     },
   ],
-};
+});

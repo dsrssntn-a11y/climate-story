@@ -13,6 +13,17 @@
  * Students: Keep this file minimal. If you can do it in Tailwind, do it there.
  */
 
+/* ── Economic / Fiscal value frame — accent palette ─────────────────────── */
+:root {
+  --color-accent: #1D4ED8;
+  --color-accent-glow: #3B82F6;
+  --color-surface: #F8FAFC;
+  --color-surface-raised: #EFF6FF;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-border: #CBD5E1;
+}
+
 /* ── Smooth scrolling for anchor navigation ─────────────────────────────── */
 @layer base {
   html {
@@ -42,6 +53,110 @@
   0%   { transform: translateY(0);   opacity: 1; }
   60%  { transform: translateY(8px); opacity: 0.2; }
   100% { transform: translateY(0);   opacity: 1; }
+}
+
+/* ── Bird layer animations (BirdLayer.tsx) ──────────────────────────────── */
+@keyframes bird-flight {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+.bird-fly {
+  animation-name: bird-flight;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+/* ── Amazon branch scene animation (AmazonBranchScene.tsx, Section 1 only) ─
+   Not specified in the request that introduced this component — added to
+   match the sway/bob pattern used by the other overlays, since the
+   component references .branch-sway with no keyframes defined for it. */
+@keyframes branch-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-2deg); }
+}
+
+.branch-sway {
+  animation: branch-sway 4000ms ease-in-out infinite;
+}
+
+/* ── Brazil marker animations (BrazilMarker.tsx, Section 5 only) ─────────── */
+@keyframes brazil-ping {
+  0%   { transform: scale(0.6); opacity: 0.55; }
+  70%  { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.brazil-ping {
+  background: rgba(209, 81, 26, 0.55);
+  animation: brazil-ping 2.4s ease-out infinite;
+}
+
+@keyframes brazil-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-2px) rotate(-3deg); }
+}
+
+.brazil-bob {
+  animation: brazil-bob 2.8s ease-in-out infinite;
+}
+
+/* ── Ghost drift animation (GhostDrift.tsx, Section 6 only) ──────────────── */
+@keyframes ghost-drift-path {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  6%   { opacity: 0.9; }
+  94%  { opacity: 0.9; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+@keyframes ghost-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  50%      { transform: translateY(-6px) rotate(3deg) scale(1.05); }
+}
+
+.ghost-drift {
+  animation:
+    ghost-drift-path 12000ms linear forwards,
+    ghost-sway 3400ms ease-in-out infinite;
+}
+
+/* ── Growth highlight animation (GrowthHighlight.tsx, Section 7 only) ────── */
+@keyframes growth-glow {
+  0%, 100% {
+    box-shadow: 0 0 0px 0px rgba(202, 219, 72, 0);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px rgba(202, 219, 72, 0.35);
+    transform: scale(1.06);
+  }
+}
+
+.growth-pulse {
+  animation: growth-glow 2600ms ease-in-out infinite;
+}
+
+/* ── Temperature marker animations (TemperatureMarker.tsx, Section 3 only) ─ */
+@keyframes temp-ping {
+  0%   { transform: scale(0.6); opacity: 0.55; }
+  70%  { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.temp-ping {
+  background: rgba(245, 149, 88, 0.55);
+  animation: temp-ping 2.4s ease-out infinite;
+}
+
+@keyframes temp-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-2px) rotate(-3deg); }
+}
+
+.temp-bob {
+  animation: temp-bob 2.8s ease-in-out infinite;
 }
 
 /* ── Custom scrollbar (subtle, matches dark theme) ──────────────────────── */

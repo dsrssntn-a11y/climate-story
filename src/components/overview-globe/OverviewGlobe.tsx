@@ -347,7 +347,7 @@ export const OverviewGlobe = component$(() => {
                 boxShadow: `0 0 8px ${eco.globe.color}`,
               }}
             />
-            <span class="text-sm text-slate-100 group-hover:text-slate-200 transition-colors whitespace-nowrap">
+            <span class="text-sm text-slate-100 group-hover:text-slate-200 transition-colors">
               {eco.name}
             </span>
           </a>

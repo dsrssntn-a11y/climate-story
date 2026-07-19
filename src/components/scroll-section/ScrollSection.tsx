@@ -6,7 +6,7 @@
  * Each ecosystem section is wrapped in this component. It uses the
  * browser's Intersection Observer API to detect when the section
  * enters the viewport. When visible, it:
- *   1. Sets `isVisible` to true (passed down to Globe & ThresholdBar)
+ *   1. Sets `isVisible` to true (passed down to Globe)
  *   2. Triggers CSS fade-in / slide-up animations via Tailwind classes
  *
  * WHY INTERSECTION OBSERVER?

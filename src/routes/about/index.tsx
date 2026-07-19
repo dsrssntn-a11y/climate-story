@@ -57,7 +57,7 @@ export default component$(() => {
         <section class="mb-14">
           <h2 class="text-xl font-semibold text-white mb-4">What It Is</h2>
           <p class="text-slate-100 leading-relaxed mb-4">
-            This piece explores five ecosystems approaching dangerous tipping points: coral reefs, the Amazon rainforest, Arctic sea ice, mangroves and coastal wetlands, and grasslands and savannas. Each section combines a D3-powered globe visualization with narrative text, an animated threshold bar showing proximity to the tipping point, and key statistics — all triggered as you scroll.
+            This piece explores five ecosystems approaching dangerous tipping points: coral reefs, the Amazon rainforest, Arctic sea ice, mangroves and coastal wetlands, and grasslands and savannas. Each section combines a D3-powered globe visualization with narrative text and key statistics — all triggered as you scroll.
           </p>
           <p class="text-slate-100 leading-relaxed">
             It's designed as a reference implementation for Terra Studio participants: a fully working example of what you can build in Module 6, with every design and data decision documented in the code comments.
@@ -81,10 +81,10 @@ export default component$(() => {
           <p class="text-slate-100 leading-relaxed mb-6">
             The entire codebase is open source under the MIT license. If you're a Terra Studio participant building your own piece, the one file you need to edit is{" "}
             <code class="text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded text-sm font-mono">src/data/ecosystems.ts</code>
-            {" "}— the single source of truth for all content. Replace the five ecosystems with your own data and the entire page updates automatically.
+            {" "}— the single source of truth for all content. Replace the sections with your own data and the entire page updates automatically.
           </p>
           <a
-            href="https://github.com/bodhicodes/vanishing-earth-climate-storytelling"
+            href="https://github.com/dsrssntn-a11y/climate-story"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-700 text-slate-300 hover:border-slate-200 hover:text-white transition-colors text-sm font-medium"
@@ -120,15 +120,14 @@ export default component$(() => {
           <h2 class="text-xl font-semibold text-white mb-4">Data Sources</h2>
           <ul class="space-y-2">
             {[
-              { label: "IPBES Global Assessment (2019)", href: "https://www.ipbes.net/global-assessment" },
-              { label: "IUCN Red List of Ecosystems", href: "https://www.iucnrle.org/" },
-              { label: "WWF Living Planet Report", href: "https://livingplanet.panda.org/" },
-              { label: "IPCC Sixth Assessment Report (AR6)", href: "https://www.ipcc.ch/assessment-report/ar6/" },
-              { label: "Global Carbon Project", href: "https://www.globalcarbonproject.org/" },
-              { label: "GCRMN Status of Coral Reefs of the World", href: "https://gcrmn.net/2020-report/" },
-              { label: "National Snow and Ice Data Center (NSIDC)", href: "https://nsidc.org/" },
-              { label: "Global Mangrove Watch", href: "https://www.globalmangrovewatch.org/" },
-              { label: "Armstrong McKay et al. — Exceeding 1.5°C could trigger multiple tipping points (Science, 2022)", href: "https://www.science.org/doi/10.1126/science.abn7950" },
+              { label: "Gatti et al. 2021, Nature — Amazonia as a carbon source linked to deforestation and climate change", href: "https://doi.org/10.1038/s41586-021-03629-6" },
+              { label: "Bourgoin et al. 2025, Biogeosciences — 2024 Amazon fire emissions", href: "https://bg.copernicus.org/articles/22/5247/2025/" },
+              { label: "EC Joint Research Centre — Unprecedented Amazon fires 2024 fuel record CO2 emissions (Oct 2025)", href: "https://joint-research-centre.ec.europa.eu/jrc-news-and-updates/unprecedented-amazon-fires-2024-fuel-record-co2-emissions-2025-10-08_en" },
+              { label: "World Weather Attribution (Jan 2024) — Climate change, not El Niño, main driver of exceptional Amazon drought", href: "https://www.worldweatherattribution.org/climate-change-not-el-nino-main-driver-of-exceptional-drought-in-highly-vulnerable-amazon-river-basin/" },
+              { label: "Banerjee et al. 2022, Environmental Research Letters — Amazon tipping point GDP loss/gain modeling", href: "https://iopscience.iop.org/article/10.1088/1748-9326/aca3b8" },
+              { label: "USGS — Can we avert an Amazon tipping point? Economic and environmental costs", href: "https://www.usgs.gov/publications/can-we-avert-amazon-tipping-point-economic-and-environmental-costs" },
+              { label: "Saleska et al. 2023, Atmospheric Chemistry and Physics — Atmospheric CO2 inversion reveals the Amazon as a minor carbon source", href: "https://acp.copernicus.org/articles/23/9685/2023/" },
+              { label: "MAAP #220 (2024) — Amazon Conservation report on carbon loss/gain cases in the Amazon", href: "https://www.amazonconservation.org/new-maap-report-covers-key-cases-of-carbon-loss-gain-in-the-amazon/" },
             ].map((source) => (
               <li key={source.href}>
                 <a
@@ -142,6 +141,11 @@ export default component$(() => {
               </li>
             ))}
           </ul>
+          <p class="text-slate-100 leading-relaxed mt-4">
+            Compiled via an internal Ground Truth Document (verified claims
+            list, finalized 2026-07-18). Modeled projections above are
+            flagged as modeled at the point they're used.
+          </p>
         </section>
 
         <hr class="border-slate-800 mb-10" />
