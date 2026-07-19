@@ -1,4 +1,9 @@
 {
+  "version": 2,
+  "framework": "qwik",
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
   "headers": [
     {
       "source": "/(.*)?service-worker.js",
