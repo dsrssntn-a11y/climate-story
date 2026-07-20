@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "framework": "qwik",
+  "framework": "vite",
   "buildCommand": "pnpm build",
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install",
