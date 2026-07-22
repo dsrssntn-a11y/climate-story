@@ -11,6 +11,7 @@
  */
 
 import { component$ } from "@builder.io/qwik";
+import ImgTerraStudioLight from "~/media/data/assets/logos/Terra-studio-light.png?jsx";
 
 export const Hero = component$(() => {
   return (
@@ -25,12 +26,7 @@ export const Hero = component$(() => {
       />
 
       {/* ── Terra Studio logo ────────────────────────────────────── */}
-      <img
-        src="/data/assets/logos/Terra-studio-light.png"
-        alt="Terra Studio"
-        class="h-8 mb-8"
-
-      />
+      <ImgTerraStudioLight alt="Terra Studio" class="h-8 w-auto mb-8" />
 
       {/* ── Overline label ───────────────────────────────────────── */}
 

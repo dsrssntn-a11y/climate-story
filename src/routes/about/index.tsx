@@ -7,6 +7,7 @@
 
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import ImgTerradoLogo from "~/media/data/assets/logos/Terra.do Logo.webp?jsx";
 
 export default component$(() => {
   return (
@@ -15,13 +16,7 @@ export default component$(() => {
       <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
           <a href="/" class="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <img
-              src="/data/assets/logos/Terra.do Logo.webp"
-              alt="Terra.do"
-              class="h-8"
-              width="120"
-              height="32"
-            />
+            <ImgTerradoLogo alt="Terra.do" class="h-8 w-auto" />
           </a>
           <div class="flex items-center gap-6">
             <a href="/" class="text-sm text-slate-100 hover:text-white transition-colors">

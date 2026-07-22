@@ -33,17 +33,49 @@ import { Nav } from "~/components/nav/Nav";
 import { Hero } from "~/components/hero/Hero";
 import { OverviewGlobe } from "~/components/overview-globe/OverviewGlobe";
 import { Globe } from "~/components/globe/Globe";
-import { AmazonBranchScene } from "~/components/birds/AmazonBranchScene";
-import { BirdLayer } from "~/components/birds/BirdLayer";
-import { BrazilMarker } from "~/components/globe/BrazilMarker";
-import { GhostDrift } from "~/components/globe/GhostDrift";
-import { GrowthHighlight } from "~/components/globe/GrowthHighlight";
-import { TemperatureMarker } from "~/components/globe/TemperatureMarker";
+import { ClosingGlobe } from "~/components/closing-globe/ClosingGlobe";
 import { ScrollSection } from "~/components/scroll-section/ScrollSection";
 
 // ---------------------------------------------------------------------------
 // Ecosystem Section — renders one "chapter" of the scrollytelling story
 // ---------------------------------------------------------------------------
+
+/**
+ * Section 1's continent highlight — the establishing shot for the whole
+ * piece, so it spotlights all of South America (not just the Amazon basin
+ * polygon already hatched inside it). Names must match the topology's
+ * `properties.name` values (see public/data/world-110m.json).
+ */
+const SOUTH_AMERICA_COUNTRIES = [
+  "Brazil", "Peru", "Colombia", "Venezuela", "Guyana", "Suriname",
+  "Ecuador", "Bolivia", "Paraguay", "Uruguay", "Argentina", "Chile",
+];
+
+/**
+ * Section 4's grid-network nodes — one per hydropower-dependent country
+ * named in the copy, placed within each country's Amazon-basin territory
+ * (not its capital, which usually sits well outside the basin).
+ */
+const HYDROPOWER_GRID_NODES: { position: [number, number] }[] = [
+  { position: [-64, -4] },  // Brazil — western Amazonas
+  { position: [-70, -2] },  // Colombia — Amazonas department
+  { position: [-76, -1] },  // Ecuador — Oriente region
+  { position: [-74, -6] },  // Peru — Loreto region
+  { position: [-65, -13] }, // Bolivia — Beni lowlands
+];
+
+/**
+ * Section 5's loss-ripple nodes — same real locations as Section 4's grid
+ * (same five countries recurring through the story), now sized by each
+ * country's modeled GDP loss share instead of connected by power lines.
+ */
+const GDP_LOSS_NODES: { position: [number, number]; value: number }[] = [
+  { position: [-64, -4], value: 184.1 },  // Brazil
+  { position: [-74, -6], value: 35.3 },   // Peru
+  { position: [-70, -2], value: 17.6 },   // Colombia
+  { position: [-65, -13], value: 11.4 },  // Bolivia
+  { position: [-76, -1], value: 8.2 },    // Ecuador
+];
 
 /**
  * EcosystemSection renders a single tipping-point section.
@@ -86,9 +118,9 @@ const EcosystemSection = component$(
             exactly, so this wrapper's box == the canvas's box at every
             viewport width. Without it, this div spans the full content
             column (e.g. 896px) while the canvas caps at 480px centered
-            inside — BirdLayer's percentage-based positions would then be
-            calculated against the wrong (much wider) box and never line
-            up with the rendered globe.
+            inside — the overlay markers' percentage-based positions would
+            then be calculated against the wrong (much wider) box and never
+            line up with the rendered globe.
           */}
           <div class={["relative w-full max-w-[480px] mx-auto", props.index === 0 ? "mb-6" : "mb-12"]}>
             <Globe
@@ -99,22 +131,41 @@ const EcosystemSection = component$(
               regions={eco.globe.regions}
               pattern={eco.globe.pattern}
               isVisible={isVisible.value}
+              continentHighlight={
+                props.index === 0 ? { countryNames: SOUTH_AMERICA_COUNTRIES } : undefined
+              }
+              sparkline={
+                props.index === 1
+                  ? { position: eco.globe.center, width: 56, color: eco.globe.glowColor }
+                  : undefined
+              }
+              thresholdLine={
+                props.index === 2
+                  ? { color: eco.globe.color, tickColor: eco.globe.glowColor }
+                  : undefined
+              }
+              gridNetwork={
+                props.index === 3
+                  ? { nodes: HYDROPOWER_GRID_NODES, color: eco.globe.glowColor }
+                  : undefined
+              }
+              lossRipple={
+                props.index === 4
+                  ? { nodes: GDP_LOSS_NODES, color: eco.globe.color }
+                  : undefined
+              }
+              canopyFade={
+                props.index === 5
+                  ? { revealPattern: { angle: -45, spacing: 13, lineWidth: 0.6 } }
+                  : undefined
+              }
+              gainBurst={
+                props.index === 6
+                  ? { position: eco.globe.center, color: eco.globe.color, glowColor: eco.globe.glowColor }
+                  : undefined
+              }
             />
-            {props.index === 1 && <BirdLayer isVisible={isVisible} />}
-            {props.index === 2 && <TemperatureMarker isVisible={isVisible} />}
-            {props.index === 4 && <BrazilMarker isVisible={isVisible} />}
-            {props.index === 5 && <GhostDrift isVisible={isVisible} />}
-            {props.index === 6 && <GrowthHighlight isVisible={isVisible} />}
           </div>
-
-          {/* ── Standalone vignette between globe and title (Section 1 only) —
-               deliberately NOT part of the globe overlay, so the globe reads
-               as a clean data visualization with nothing perched on it. */}
-          {props.index === 0 && (
-            <div class="mb-4">
-              <AmazonBranchScene isVisible={isVisible} />
-            </div>
-          )}
 
           {/* ── Section title & subtitle ─────────────────────────── */}
           <div class="text-center mb-12">
@@ -255,8 +306,36 @@ export default component$(() => {
       ))}
 
       {/* ── Closing section ───────────────────────────────────────── */}
-      <footer class="py-32 px-6 text-center">
-        <div class="max-w-2xl mx-auto">
+      {/*
+        z-0 (not just relative) is load-bearing: <main> has an opaque
+        bg-slate-950 background but never establishes its own stacking
+        context, and `relative` alone doesn't either (only position +
+        a non-auto z-index does). Without z-0 here, the globe's -z-20
+        below escapes this footer's local stacking order entirely and
+        paints behind <main>'s own background instead — which paints
+        later in the page's normal flow — making it invisible everywhere,
+        regardless of its actual position on screen.
+      */}
+      <footer class="relative z-0 py-32 px-6 text-center overflow-hidden">
+        {/* Dot-matrix background globe — continuously rotating, sitting
+            behind the text. Opacity here is the main lever for legibility;
+            the radial scrim below it is a second, rotation-independent
+            safety net so the text stays readable no matter what the globe
+            happens to be showing at any given moment. */}
+        <div class="absolute inset-0 -z-20 flex items-center justify-center opacity-60 pointer-events-none">
+          <div class="w-full max-w-[900px] aspect-square">
+            <ClosingGlobe />
+          </div>
+        </div>
+        <div
+          class="absolute inset-0 -z-10 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 700px 420px at 50% 45%, rgba(2, 6, 23, 0.75) 0%, rgba(2, 6, 23, 0.35) 55%, transparent 80%)",
+          }}
+        />
+
+        <div class="relative max-w-2xl mx-auto">
           <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white mb-8">
             The Window Is Closing
           </h2>

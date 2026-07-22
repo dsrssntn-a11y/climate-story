@@ -84,11 +84,12 @@ src/
 │   └── scroll-section/    # Intersection Observer scroll wrapper
 ├── data/
 │   └── ecosystems.ts      # ← Edit this file with your own data
+├── media/
+│   └── data/assets/logos/ # Terra.do and Terra Studio logos (build-time optimized)
 └── global.css             # Minimal global styles (Tailwind + keyframes)
 public/
 └── data/
-    ├── world-110m.json    # TopoJSON world topology
-    └── assets/logos/      # Terra.do and Terra Studio logos
+    └── world-110m.json    # TopoJSON world topology
 ```
 
 ---

@@ -8,6 +8,7 @@
  */
 
 import { component$, useSignal } from "@builder.io/qwik";
+import ImgTerradoLogo from "~/media/data/assets/logos/Terra.do Logo.webp?jsx";
 
 export const Nav = component$(() => {
   const dataMenuOpen = useSignal(false);
@@ -22,13 +23,7 @@ export const Nav = component$(() => {
           rel="noopener noreferrer"
           class="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity"
         >
-          <img
-            src="/data/assets/logos/Terra.do Logo.webp"
-            alt="Terra.do"
-            class="h-8"
-            width="120"
-            height="32"
-          />
+          <ImgTerradoLogo alt="Terra.do" class="h-8 w-auto" />
         </a>
 
         {/* ── Right-side links ─────────────────────────────────────── */}
