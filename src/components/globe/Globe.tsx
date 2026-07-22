@@ -470,10 +470,13 @@ export const Globe = component$<GlobeProps>((props) => {
           if (continentShape && continentCentroid) {
             const centerPx = projection(continentCentroid);
             const bounds = path.bounds(continentShape);
-            if (centerPx && bounds) {
-              const [[x0, y0], [x1, y1]] = bounds;
-              const radius = Math.max(x1 - x0, y1 - y0) * 0.75;
-
+            const [[x0, y0], [x1, y1]] = bounds;
+            const radius = Math.max(x1 - x0, y1 - y0) * 0.75;
+            // path.bounds() returns degenerate +/-Infinity bounds when the
+            // shape has rotated entirely off the visible hemisphere (e.g.
+            // dragged to the back) — guard against the non-finite radius
+            // that produces, since createRadialGradient throws on it.
+            if (centerPx && Number.isFinite(radius) && radius > 0) {
               ctx.save();
               ctx.beginPath();
               path({ type: "Sphere" });
