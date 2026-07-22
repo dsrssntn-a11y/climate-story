@@ -4,11 +4,17 @@ allowBuilds:
   esbuild: true
   less: true
   sharp: true
-  vercel: true
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - deasync
   - esbuild
   - less
   - sharp
-  - vercel
+overrides:
+  # Transitive-only deps whose parent (vite, sass, qwik-city's
+  # vite-imagetools) hasn't bumped its own declared range past the
+  # vulnerable version yet. Patch-level bumps for a parser/data-structure
+  # lib and an image-processing lib; no API changes expected at this level.
+  yaml: '>=2.8.3'
+  immutable: '>=5.1.8'
+  sharp: '>=0.35.0'
